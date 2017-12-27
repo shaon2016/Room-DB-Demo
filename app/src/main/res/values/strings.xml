@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Room Demo</string>
+    <string name="age">Age</string>
+    <string name="name">name</string>
+    <string name="add">Add</string>
+    <string name="remove_all_data">Remove all data</string>
+</resources>
