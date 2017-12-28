@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/tvName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingLeft="8dp"
-        android:paddingStart="8dp"
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
         android:text="name"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -20,10 +18,19 @@
         android:id="@+id/tvAge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingBottom="16dp"
-        android:paddingLeft="8dp"
-        android:paddingStart="8dp"
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
         android:text="25"
         android:textSize="13sp" />
+
+    <TextView
+
+        android:id="@+id/tvBookNo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:text="@string/book_no_5"
+        android:textSize="14sp" />
 </LinearLayout>

@@ -5,6 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.durbinlabs.roomdemo.interfaces.BookDao;
 import com.durbinlabs.roomdemo.interfaces.ClientDao;
 import com.durbinlabs.roomdemo.interfaces.EmployeeDao;
 import com.durbinlabs.roomdemo.model.Client;
@@ -34,5 +35,8 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public abstract EmployeeDao employeeDao();
+
     public abstract ClientDao clientDao();
+
+    public abstract BookDao bookDao();
 }
