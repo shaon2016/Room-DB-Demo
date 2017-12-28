@@ -19,7 +19,7 @@ public interface BookDao {
     List<Book> getAll();
 
     @Query("SELECT * FROM book where user_id = :userId")
-    int getAllById(int userId);
+    Book getAllById(int userId);
 
     @Query("SELECT total_book FROM book where user_id = :userId")
     int getTotalBookById(int userId);

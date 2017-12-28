@@ -27,12 +27,6 @@ public class Client {
         this.expense = expense;
     }
 
-    @Ignore
-    public Client(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
     public int getId() {
         return id;
     }

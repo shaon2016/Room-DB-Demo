@@ -1,5 +1,6 @@
 package com.durbinlabs.roomdemo.activities;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import com.durbinlabs.roomdemo.adapters.RecyclerViewAdapter;
 import com.durbinlabs.roomdemo.database.AppDatabase;
 import com.durbinlabs.roomdemo.model.Book;
 import com.durbinlabs.roomdemo.model.Client;
+import com.durbinlabs.roomdemo.model.DataModel;
 import com.durbinlabs.roomdemo.model.Employee;
 
 import java.util.ArrayList;
@@ -25,10 +27,12 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private AppDatabase db;
     private List<Client> clients;
+    private List<Book> books;
     private RecyclerView rv;
     private Button btnAdd, btnRemoveAll;
     private EditText evName, evAge;
     private RecyclerViewAdapter adapter;
+    private List<DataModel> modelList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         db = AppDatabase.getInstance(getApplicationContext());
         // Inserting data to the tables
         clients = new ArrayList<>();
+        modelList = new ArrayList<>();
+        books = new ArrayList<>();
         insert();
 
         evName = findViewById(R.id.evAddName);
@@ -54,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 addNewData();
                 adapter.clear();
-                getAllData();
+
+                MyDataLoadAsyncTask myDataLoadAsyncTask = new MyDataLoadAsyncTask();
+                myDataLoadAsyncTask.execute();
             }
         });
 
@@ -67,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addNewData() {
+        //TODO
         String name = evName.getText().toString();
         int age = parseInt(evAge.getText().toString(), -1);
 
@@ -100,25 +109,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void getAllData() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Here I am using sleep method. Because it takes some time to get all the data
-                // from database
-                clients = db.clientDao().getAll();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Log.d(TAG, "Client table size: " + clients.size());
-
-                loadDataToRecyclerView();
-            }
-        }).start();
-    }
-
     private void insert() {
         new Thread(new Runnable() {
             @Override
@@ -126,26 +116,13 @@ public class MainActivity extends AppCompatActivity {
                 db.clientDao().insert(new Client(1, "Shaon", 25, 5000));
                 db.clientDao().insert(new Client(2, "Ashiq", 26, 6000));
 
-                db.bookDao().insert(new Book("The Alchemist", 2, 1 ));
-                db.bookDao().insert(new Book("The Alchemist", 5, 2 ));
+                db.bookDao().insert(new Book("The Alchemist", 2, 1));
+                db.bookDao().insert(new Book("The Alchemist", 5, 2));
 
-                getAllData();
+                MyDataLoadAsyncTask myDataLoadAsyncTask = new MyDataLoadAsyncTask();
+                myDataLoadAsyncTask.execute();
             }
         }).start();
-    }
-
-    private void loadDataToRecyclerView() {
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (clients.size() > 0) {
-                    adapter = new RecyclerViewAdapter(clients,
-                            MainActivity.this);
-                    rv.setAdapter(adapter);
-                }
-            }
-        });
     }
 
     private void clearRecyclerView() {
@@ -153,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                //TODO remove
                 db.clientDao().removeAllClients();
                 runOnUiThread(new Runnable() {
                     @Override
@@ -160,8 +138,33 @@ public class MainActivity extends AppCompatActivity {
                         adapter.clear();
                     }
                 });
-                getAllData();
+                MyDataLoadAsyncTask myDataLoadAsyncTask = new MyDataLoadAsyncTask();
+                myDataLoadAsyncTask.execute();
             }
         }).start();
+    }
+
+    protected class MyDataLoadAsyncTask extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            clients = db.clientDao().getAll();
+            for (Client client : clients) {
+                books.add(db.bookDao().getAllById(client.getId()));
+                Log.d(TAG, "Size of book: " + books.size() + "");
+            }
+
+            for (int i = 0; i < clients.size(); i++) {
+                modelList.add(new DataModel(clients.get(i), books.get(i)));
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            adapter = new RecyclerViewAdapter(modelList, MainActivity.this);
+            rv.setAdapter(adapter);
+        }
     }
 }

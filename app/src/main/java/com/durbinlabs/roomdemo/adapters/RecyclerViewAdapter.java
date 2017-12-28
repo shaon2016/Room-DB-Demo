@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.durbinlabs.roomdemo.R;
+import com.durbinlabs.roomdemo.activities.MainActivity;
 import com.durbinlabs.roomdemo.database.AppDatabase;
 import com.durbinlabs.roomdemo.model.Book;
 import com.durbinlabs.roomdemo.model.Client;
+import com.durbinlabs.roomdemo.model.DataModel;
 
 import java.util.List;
 import java.util.zip.Inflater;
@@ -22,11 +24,12 @@ import java.util.zip.Inflater;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
     private static final String TAG = RecyclerViewAdapter.class.getSimpleName();
-    private List<Client> clients;
+    private List<DataModel> modelList;
     private Context context;
 
-    public RecyclerViewAdapter(List<Client> clients, Context context) {
-        this.clients = clients;
+
+    public RecyclerViewAdapter(List<DataModel> modelList, Context context) {
+        this.modelList = modelList;
         this.context = context;
     }
 
@@ -38,18 +41,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        holder.tvName.setText(clients.get(position).getName());
-        holder.tvAge.setText(clients.get(position).getAge() + "");
+        Client client = modelList.get(position).getClient();
+        holder.tvName.setText(client.getName());
+        holder.tvAge.setText(client.getAge() + "");
+        holder.tvBookNo.setText(modelList.get(position).getBook().getTotalBook() + "");
     }
 
     @Override
     public int getItemCount() {
-        return clients.size();
+        return modelList.size();
     }
 
     public void clear() {
         int itemCount = getItemCount();
-        clients.clear();
+        modelList.clear();
         notifyItemRangeRemoved(0, itemCount);
     }
 
