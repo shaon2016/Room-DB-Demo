@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.durbinlabs.roomdemo.R;
 import com.durbinlabs.roomdemo.adapters.RecyclerViewAdapter;
@@ -17,7 +16,6 @@ import com.durbinlabs.roomdemo.database.AppDatabase;
 import com.durbinlabs.roomdemo.model.Book;
 import com.durbinlabs.roomdemo.model.Client;
 import com.durbinlabs.roomdemo.model.DataModel;
-import com.durbinlabs.roomdemo.model.Employee;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Book> books;
     private RecyclerView rv;
     private Button btnAdd, btnRemoveAll;
-    private EditText evName, evAge;
+    private EditText evName, evAge, evTotalBook;
     private RecyclerViewAdapter adapter;
     private List<DataModel> modelList;
 
@@ -52,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         evName = findViewById(R.id.evAddName);
         evAge = findViewById(R.id.evAddAge);
+        evTotalBook = findViewById(R.id.evAddTotalBookCount);
         btnAdd = findViewById(R.id.btnAdd);
         btnRemoveAll = findViewById(R.id.btnRemoveAll);
 
@@ -75,29 +74,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addNewData() {
-        //TODO
         String name = evName.getText().toString();
         int age = parseInt(evAge.getText().toString(), -1);
+        final int totalBook = parseInt(evTotalBook.getText().toString(), -1);
 
+        boolean valid = validateInput(name, age, totalBook);
+        if (!valid) return;
         final Client client = new Client(new Random().nextInt(), name, age, 20);
 
-        if (name.equals("")) {
-            evName.setError("Name cant be empty");
-            return;
-        }
-        if (age < 0) {
-            evAge.setError("Age cant be empty. It must be a numeric value");
-            return;
-        }
-
+        /*
+        first inserting the client.
+        second getting the client id
+        then inserting book number using that id
+         */
         new Thread(new Runnable() {
             @Override
             public void run() {
                 db.clientDao().insert(client);
+                Client lastClient = db.clientDao().getLastRow();
+                Book book = new Book("The Alchemist", totalBook, lastClient.getId());
+                db.bookDao().insert(book);
             }
         }).start();
+    }
 
+    private boolean validateInput(String name, int age, int totalBook) {
+        if (name.equals("")) {
+            evName.setError("Name cant be empty");
+            return false;
+        }
+        if (age < 0) {
+            evAge.setError("Age cant be empty. It must be a numeric value");
+            return false;
+        }
+        if (totalBook < 0) {
+            evAge.setError("Total book cant be empty. It must be a numeric value");
+            return false;
+        }
 
+        return true;
     }
 
     public static int parseInt(String numStr, int defValue) {
@@ -130,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //TODO remove
                 db.clientDao().removeAllClients();
                 runOnUiThread(new Runnable() {
                     @Override
@@ -138,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                         adapter.clear();
                     }
                 });
+
                 MyDataLoadAsyncTask myDataLoadAsyncTask = new MyDataLoadAsyncTask();
                 myDataLoadAsyncTask.execute();
             }

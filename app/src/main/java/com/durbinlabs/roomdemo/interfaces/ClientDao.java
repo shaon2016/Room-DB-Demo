@@ -29,6 +29,9 @@ public interface ClientDao {
     @Delete
     void delete(Client client);
 
-    @Query("DELETE FROM CLIENT")
+    @Query("DELETE FROM client")
     void removeAllClients();
+
+    @Query("SELECT * FROM client ORDER BY id DESC LIMIT 1")
+    Client getLastRow();
 }

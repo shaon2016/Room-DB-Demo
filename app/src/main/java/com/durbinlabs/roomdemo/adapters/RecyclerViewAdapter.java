@@ -26,11 +26,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static final String TAG = RecyclerViewAdapter.class.getSimpleName();
     private List<DataModel> modelList;
     private Context context;
-
+    private AppDatabase db;
 
     public RecyclerViewAdapter(List<DataModel> modelList, Context context) {
         this.modelList = modelList;
         this.context = context;
+        db = AppDatabase.getInstance(context);
     }
 
     @Override
@@ -41,10 +42,30 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        Client client = modelList.get(position).getClient();
-        holder.tvName.setText(client.getName());
-        holder.tvAge.setText(client.getAge() + "");
-        holder.tvBookNo.setText(modelList.get(position).getBook().getTotalBook() + "");
+        final int pos = holder.getAdapterPosition();
+        final Client client = modelList.get(pos).getClient();
+        holder.tvName.setText("Name: " + client.getName());
+        holder.tvAge.setText("Age: " + client.getAge());
+        holder.tvBookNo.setText(context.getString(R.string.total_book_) + " " +
+                modelList.get(pos).getBook().getTotalBook() + "");
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                remove(pos);
+                deleteDataFromClientTable(client);
+                return true;
+            }
+        });
+    }
+
+    private void deleteDataFromClientTable(final Client client) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.clientDao().delete(client);
+            }
+        }).start();
     }
 
     @Override
@@ -68,5 +89,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             tvAge = itemView.findViewById(R.id.tvAge);
             tvBookNo = itemView.findViewById(R.id.tvBookNo);
         }
+    }
+
+    public void remove(int position) {
+        modelList.remove(position);
+        notifyDataSetChanged();
+        Log.d(TAG, "Pos: " + position + " And Items: " + getItemCount());
     }
 }
