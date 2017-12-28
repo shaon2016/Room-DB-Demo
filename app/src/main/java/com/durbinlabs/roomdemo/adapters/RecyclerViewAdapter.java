@@ -44,6 +44,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final int pos = holder.getAdapterPosition();
         final Client client = modelList.get(pos).getClient();
+
+        holder.tvId.setText("ID: " + client.getId());
         holder.tvName.setText("Name: " + client.getName());
         holder.tvAge.setText("Age: " + client.getAge());
         holder.tvBookNo.setText(context.getString(R.string.total_book_) + " " +
@@ -80,11 +82,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     protected class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvName, tvAge, tvBookNo;
+        public TextView tvName, tvAge, tvBookNo, tvId;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
+            tvId = itemView.findViewById(R.id.tvID);
             tvName = itemView.findViewById(R.id.tvName);
             tvAge = itemView.findViewById(R.id.tvAge);
             tvBookNo = itemView.findViewById(R.id.tvBookNo);

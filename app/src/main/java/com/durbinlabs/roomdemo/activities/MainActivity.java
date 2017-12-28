@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         boolean valid = validateInput(name, age, totalBook);
         if (!valid) return;
-        final Client client = new Client(new Random().nextInt(), name, age, 20);
+        final Client client = new Client(name, age, 20);
 
         /*
         first inserting the client.
@@ -92,8 +92,10 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 db.clientDao().insert(client);
                 Client lastClient = db.clientDao().getLastRow();
+                Log.d(TAG, "In add new data: client id: " + lastClient.getId());
                 Book book = new Book("The Alchemist", totalBook, lastClient.getId());
                 db.bookDao().insert(book);
+                Log.d(TAG, "Size of book table: " + db.bookDao().getAll().size());
             }
         }).start();
     }
@@ -128,11 +130,16 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                db.clientDao().insert(new Client(1, "Shaon", 25, 5000));
-                db.clientDao().insert(new Client(2, "Ashiq", 26, 6000));
+                Client lastClient;
+                db.clientDao().insert(new Client("Shaon", 25, 5000));
+                lastClient = db.clientDao().getLastRow();
+                Log.d(TAG, "In Insert: client id: " + lastClient.getId());
+                db.bookDao().insert(new Book("The Alchemist", 67, lastClient.getId()));
 
-                db.bookDao().insert(new Book("The Alchemist", 2, 1));
-                db.bookDao().insert(new Book("The Alchemist", 5, 2));
+                db.clientDao().insert(new Client("Ashiq", 26, 6000));
+                lastClient = db.clientDao().getLastRow();
+                Log.d(TAG, "In insert: client id: " + lastClient.getId());
+                db.bookDao().insert(new Book("The Alchemist", 65, lastClient.getId()));
 
                 MyDataLoadAsyncTask myDataLoadAsyncTask = new MyDataLoadAsyncTask();
                 myDataLoadAsyncTask.execute();
@@ -166,13 +173,34 @@ public class MainActivity extends AppCompatActivity {
             clients = db.clientDao().getAll();
             for (Client client : clients) {
                 books.add(db.bookDao().getAllById(client.getId()));
-                Log.d(TAG, "Size of book: " + books.size() + "");
+                Log.d(TAG, "do in background: client id " + client.getId());
+                Log.d(TAG, "do in background: Total Book " + db.bookDao().getTotalBookById(client
+                        .getId()));
             }
 
             for (int i = 0; i < clients.size(); i++) {
                 modelList.add(new DataModel(clients.get(i), books.get(i)));
             }
 
+            //TODO model list e data vul dekhacche ta thik kora
+            /*database e data thikoi save hocche*/
+            for (Client client : clients) {
+                Book allById = db.bookDao().getAllById(client
+                        .getId());
+                Log.d(TAG, "In do in background: All book data , ID: " + allById.getId());
+                Log.d(TAG, "In do in background: All book data, Total Book:  " + allById
+                        .getTotalBook());
+            }
+// TODO need to check recycler view , why it loads falls data
+// problem is . eta ekta data pele model list er position 1 howay data prothomtai nicche
+            for (int i = 0; i < modelList.size(); i++) {
+                Book allById = modelList.get(i).getBook();
+                Log.d(TAG, "In do in background: All book data using data model , ID: " + allById
+                        .getId
+                                ());
+                Log.d(TAG, "In do in background:All book data using data model, Total Book:  " + allById
+                        .getTotalBook());
+            }
             return null;
         }
 

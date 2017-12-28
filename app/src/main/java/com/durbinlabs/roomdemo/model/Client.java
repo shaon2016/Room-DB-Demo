@@ -14,7 +14,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "client")
 public class Client {
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
     private int id;
     @ColumnInfo(name = "client_name")
     private String name;
@@ -23,8 +23,7 @@ public class Client {
     @ColumnInfo(name = "client_expense")
     private int expense;
 
-    public Client(int id, String name, int age, int expense) {
-        this.id = id;
+    public Client( String name, int age, int expense) {
         this.name = name;
         this.age = age;
         this.expense = expense;

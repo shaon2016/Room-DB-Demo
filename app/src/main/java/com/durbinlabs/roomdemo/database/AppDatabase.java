@@ -16,7 +16,7 @@ import com.durbinlabs.roomdemo.model.Employee;
  * Created by Shaon on 12/27/2017.
  */
 
-@Database(entities = {Employee.class, Client.class, Book.class}, version = 1)
+@Database(entities = {Employee.class, Client.class, Book.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "appDatabase.db";
     private static volatile AppDatabase instance;
