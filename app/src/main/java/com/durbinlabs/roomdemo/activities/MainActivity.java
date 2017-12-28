@@ -67,26 +67,49 @@ public class MainActivity extends AppCompatActivity {
 
     private void addNewData() {
         String name = evName.getText().toString();
-        int age = 0;
-        if (!evAge.getText().toString().equals(""))
-            age = Integer.parseInt(evAge.getText().toString());
+        int age = parseInt(evAge.getText().toString(), -1);
 
         final Client client = new Client(new Random().nextInt(), name, age, 20);
 
-        if (!name.equals("") && !evAge.getText().toString().equals(""))
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    db.clientDao().insert(client);
-                }
-            }).start();
+        if (name.equals("")) {
+            evName.setError("Name cant be empty");
+            return;
+        }
+        if (age < 0) {
+            evAge.setError("Age cant be empty. It must be a numeric value");
+            return;
+        }
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.clientDao().insert(client);
+            }
+        }).start();
+
+
+    }
+
+    public static int parseInt(String numStr, int defValue) {
+        try {
+            return Integer.parseInt(numStr);
+        } catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
+            return defValue;
+        }
     }
 
     private void getAllData() {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                // Here I am using sleep method. Because it takes some time to get all the data
+                // from database
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 clients = db.clientDao().getAll();
                 Log.d(TAG, "Client table size: " + clients.size());
 
@@ -126,6 +149,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 db.clientDao().removeAllClients();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.clear();
+                    }
+                });
                 getAllData();
             }
         }).start();

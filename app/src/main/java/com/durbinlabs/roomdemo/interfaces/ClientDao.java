@@ -29,6 +29,6 @@ public interface ClientDao {
     @Delete
     void delete(Client client);
 
-    @Query("delete from client")
+    @Query("DELETE FROM CLIENT")
     void removeAllClients();
 }
