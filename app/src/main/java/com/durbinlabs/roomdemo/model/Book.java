@@ -16,10 +16,15 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class Book {
     @PrimaryKey(autoGenerate = true)
     private int id;
+    private String name;
+    @ColumnInfo(name = "total_book")
+    private int totalBook;
     @ColumnInfo(name = "user_id")
     private int userId;
 
-    public Book(int userId) {
+    public Book(String name, int totalBook, int userId) {
+        this.name = name;
+        this.totalBook = totalBook;
         this.userId = userId;
     }
 
@@ -29,6 +34,22 @@ public class Book {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getTotalBook() {
+        return totalBook;
+    }
+
+    public void setTotalBook(int totalBook) {
+        this.totalBook = totalBook;
     }
 
     public int getUserId() {

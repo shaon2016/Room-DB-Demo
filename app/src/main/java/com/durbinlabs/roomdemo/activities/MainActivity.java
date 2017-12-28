@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.durbinlabs.roomdemo.R;
 import com.durbinlabs.roomdemo.adapters.RecyclerViewAdapter;
 import com.durbinlabs.roomdemo.database.AppDatabase;
+import com.durbinlabs.roomdemo.model.Book;
 import com.durbinlabs.roomdemo.model.Client;
 import com.durbinlabs.roomdemo.model.Employee;
 
@@ -105,12 +106,12 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 // Here I am using sleep method. Because it takes some time to get all the data
                 // from database
+                clients = db.clientDao().getAll();
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                clients = db.clientDao().getAll();
                 Log.d(TAG, "Client table size: " + clients.size());
 
                 loadDataToRecyclerView();
@@ -125,12 +126,16 @@ public class MainActivity extends AppCompatActivity {
                 db.clientDao().insert(new Client(1, "Shaon", 25, 5000));
                 db.clientDao().insert(new Client(2, "Ashiq", 26, 6000));
 
+                db.bookDao().insert(new Book("The Alchemist", 2, 1 ));
+                db.bookDao().insert(new Book("The Alchemist", 5, 2 ));
+
                 getAllData();
             }
         }).start();
     }
 
     private void loadDataToRecyclerView() {
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

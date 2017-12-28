@@ -8,6 +8,7 @@ import android.content.Context;
 import com.durbinlabs.roomdemo.interfaces.BookDao;
 import com.durbinlabs.roomdemo.interfaces.ClientDao;
 import com.durbinlabs.roomdemo.interfaces.EmployeeDao;
+import com.durbinlabs.roomdemo.model.Book;
 import com.durbinlabs.roomdemo.model.Client;
 import com.durbinlabs.roomdemo.model.Employee;
 
@@ -15,7 +16,7 @@ import com.durbinlabs.roomdemo.model.Employee;
  * Created by Shaon on 12/27/2017.
  */
 
-@Database(entities = {Employee.class, Client.class}, version = 1)
+@Database(entities = {Employee.class, Client.class, Book.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "appDatabase.db";
     private static volatile AppDatabase instance;

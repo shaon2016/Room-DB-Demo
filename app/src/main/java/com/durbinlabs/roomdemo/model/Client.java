@@ -64,4 +64,5 @@ public class Client {
     public void setExpense(int expense) {
         this.expense = expense;
     }
+
 }
