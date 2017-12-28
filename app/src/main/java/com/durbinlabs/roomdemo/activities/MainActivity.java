@@ -44,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
         db = AppDatabase.getInstance(getApplicationContext());
         // Inserting data to the tables
         clients = new ArrayList<>();
-        modelList = new ArrayList<>();
         books = new ArrayList<>();
-        insert();
+        adapter = new RecyclerViewAdapter(modelList, this);
+        //insert();
 
         evName = findViewById(R.id.evAddName);
         evAge = findViewById(R.id.evAddAge);
@@ -71,6 +71,10 @@ public class MainActivity extends AppCompatActivity {
                 clearRecyclerView();
             }
         });
+
+        //Load data initially i
+        MyDataLoadAsyncTask myDataLoadAsyncTask = new MyDataLoadAsyncTask();
+        myDataLoadAsyncTask.execute();
     }
 
     private void addNewData() {
@@ -92,10 +96,10 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 db.clientDao().insert(client);
                 Client lastClient = db.clientDao().getLastRow();
-                Log.d(TAG, "In add new data: client id: " + lastClient.getId());
                 Book book = new Book("The Alchemist", totalBook, lastClient.getId());
                 db.bookDao().insert(book);
-                Log.d(TAG, "Size of book table: " + db.bookDao().getAll().size());
+                // Data is being inserted in the background. That time data may not be got by the
+                // asynctask
             }
         }).start();
     }
@@ -133,12 +137,12 @@ public class MainActivity extends AppCompatActivity {
                 Client lastClient;
                 db.clientDao().insert(new Client("Shaon", 25, 5000));
                 lastClient = db.clientDao().getLastRow();
-                Log.d(TAG, "In Insert: client id: " + lastClient.getId());
+
                 db.bookDao().insert(new Book("The Alchemist", 67, lastClient.getId()));
 
                 db.clientDao().insert(new Client("Ashiq", 26, 6000));
                 lastClient = db.clientDao().getLastRow();
-                Log.d(TAG, "In insert: client id: " + lastClient.getId());
+
                 db.bookDao().insert(new Book("The Alchemist", 65, lastClient.getId()));
 
                 MyDataLoadAsyncTask myDataLoadAsyncTask = new MyDataLoadAsyncTask();
@@ -166,47 +170,26 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    protected class MyDataLoadAsyncTask extends AsyncTask<String, String, String> {
+    protected class MyDataLoadAsyncTask extends AsyncTask<String, String, List<DataModel>> {
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected List<DataModel> doInBackground(String... strings) {
+            modelList = new ArrayList<>();
             clients = db.clientDao().getAll();
             for (Client client : clients) {
                 books.add(db.bookDao().getAllById(client.getId()));
-                Log.d(TAG, "do in background: client id " + client.getId());
-                Log.d(TAG, "do in background: Total Book " + db.bookDao().getTotalBookById(client
-                        .getId()));
             }
 
-            for (int i = 0; i < clients.size(); i++) {
+            for (int i = 0; i < clients.size() && i < books.size(); i++) {
                 modelList.add(new DataModel(clients.get(i), books.get(i)));
             }
 
-            //TODO model list e data vul dekhacche ta thik kora
-            /*database e data thikoi save hocche*/
-            for (Client client : clients) {
-                Book allById = db.bookDao().getAllById(client
-                        .getId());
-                Log.d(TAG, "In do in background: All book data , ID: " + allById.getId());
-                Log.d(TAG, "In do in background: All book data, Total Book:  " + allById
-                        .getTotalBook());
-            }
-// TODO need to check recycler view , why it loads falls data
-// problem is . eta ekta data pele model list er position 1 howay data prothomtai nicche
-            for (int i = 0; i < modelList.size(); i++) {
-                Book allById = modelList.get(i).getBook();
-                Log.d(TAG, "In do in background: All book data using data model , ID: " + allById
-                        .getId
-                                ());
-                Log.d(TAG, "In do in background:All book data using data model, Total Book:  " + allById
-                        .getTotalBook());
-            }
-            return null;
+            return modelList;
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            adapter = new RecyclerViewAdapter(modelList, MainActivity.this);
+        protected void onPostExecute(List<DataModel> models) {
+            adapter = new RecyclerViewAdapter(models, MainActivity.this);
             rv.setAdapter(adapter);
         }
     }

@@ -59,6 +59,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 return true;
             }
         });
+
+        Log.d(TAG,"ID: " + client.getId() + " Total Book: " +  modelList.get(pos).getBook().getTotalBook());
     }
 
     private void deleteDataFromClientTable(final Client client) {
@@ -78,7 +80,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void clear() {
         int itemCount = getItemCount();
         modelList.clear();
-        notifyItemRangeRemoved(0, itemCount);
+        //notifyItemRangeRemoved(0, itemCount);
+        notifyDataSetChanged();
     }
 
     protected class MyViewHolder extends RecyclerView.ViewHolder {
