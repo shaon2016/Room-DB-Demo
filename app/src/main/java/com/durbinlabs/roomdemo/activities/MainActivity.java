@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,8 +16,8 @@ import com.durbinlabs.roomdemo.adapters.RecyclerViewAdapter;
 import com.durbinlabs.roomdemo.database.AppDatabase;
 import com.durbinlabs.roomdemo.model.Book;
 import com.durbinlabs.roomdemo.model.Client;
-import com.durbinlabs.roomdemo.model.DataModel;
-import com.durbinlabs.roomdemo.viewmodels.DataViewModel;
+import com.durbinlabs.roomdemo.model.ClientDataModel;
+import com.durbinlabs.roomdemo.viewmodels.ClientDataViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +31,8 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     private Button btnAdd, btnRemoveAll;
     private EditText evName, evAge, evTotalBook;
     private RecyclerViewAdapter adapter;
-    private List<DataModel> modelList;
-    private DataViewModel clientViewModel;
+    private List<ClientDataModel> modelList;
+    private ClientDataViewModel clientViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         // Inserting data to the tables
         clients = new ArrayList<>();
         books = new ArrayList<>();
-        adapter = new RecyclerViewAdapter(modelList, this, this);
+        adapter = new RecyclerViewAdapter(new ArrayList<ClientDataModel>(), this, this);
         rv.setAdapter(adapter);
         //insert();
 
@@ -72,10 +71,10 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             }
         });
 
-        clientViewModel = ViewModelProviders.of(MainActivity.this).get(DataViewModel.class);
-        clientViewModel.getClientList().observe(MainActivity.this, new Observer<List<DataModel>>() {
+        clientViewModel = ViewModelProviders.of(MainActivity.this).get(ClientDataViewModel.class);
+        clientViewModel.getClientList().observe(MainActivity.this, new Observer<List<ClientDataModel>>() {
             @Override
-            public void onChanged(@Nullable List<DataModel> models) {
+            public void onChanged(@Nullable List<ClientDataModel> models) {
                 adapter.addDataToDataModel(models);
             }
         });

@@ -9,7 +9,7 @@ import android.arch.persistence.room.Query;
 
 
 import com.durbinlabs.roomdemo.model.Client;
-import com.durbinlabs.roomdemo.model.DataModel;
+import com.durbinlabs.roomdemo.model.ClientDataModel;
 
 import java.util.List;
 
@@ -41,5 +41,5 @@ public interface ClientDao {
             "FROM client " +
             "c " +
             "inner join book b ON c.id = b.user_id")
-    LiveData<List<DataModel>> getAllWithBook();
+    LiveData<List<ClientDataModel>> getAllWithBook();
 }

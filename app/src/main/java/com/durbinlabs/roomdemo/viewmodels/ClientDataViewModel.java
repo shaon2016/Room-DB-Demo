@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 
 import com.durbinlabs.roomdemo.database.AppDatabase;
 import com.durbinlabs.roomdemo.model.Client;
-import com.durbinlabs.roomdemo.model.DataModel;
+import com.durbinlabs.roomdemo.model.ClientDataModel;
 
 import java.util.List;
 
@@ -16,19 +16,19 @@ import java.util.List;
  * Created by Shaon on 12/30/2017.
  */
 
-public class DataViewModel extends AndroidViewModel {
-    private final LiveData<List<DataModel>> clientList;
+public class ClientDataViewModel extends AndroidViewModel {
+    private final LiveData<List<ClientDataModel>> clientList;
     private AppDatabase db;
 
 
-    public DataViewModel(@NonNull Application application) {
+    public ClientDataViewModel(@NonNull Application application) {
         super(application);
 
         db = AppDatabase.getInstance(this.getApplication());
         clientList = db.clientDao().getAllWithBook();
     }
 
-    public LiveData<List<DataModel>> getClientList() {
+    public LiveData<List<ClientDataModel>> getClientList() {
         return clientList;
     }
 

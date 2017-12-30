@@ -4,12 +4,12 @@ package com.durbinlabs.roomdemo.model;
  * Created by hp on 12/28/2017.
  */
 
-public class DataModel {
+public class ClientDataModel {
     private int id;
     private String name;
     private int age, totalBook;
 
-    public DataModel(int id, String name, int age, int totalBook) {
+    public ClientDataModel(int id, String name, int age, int totalBook) {
         this.id = id;
         this.name = name;
         this.age = age;
