@@ -27,11 +27,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<DataModel> modelList;
     private Context context;
     private AppDatabase db;
+    private View.OnLongClickListener listener;
 
-    public RecyclerViewAdapter(List<DataModel> modelList, Context context) {
+    public RecyclerViewAdapter(List<DataModel> modelList, Context context, View.OnLongClickListener
+            listener) {
         this.modelList = modelList;
         this.context = context;
         db = AppDatabase.getInstance(context);
+        this.listener = listener;
     }
 
     @Override
@@ -42,47 +45,49 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        final int pos = holder.getAdapterPosition();
-        final Client client = modelList.get(pos).getClient();
+        int pos = holder.getAdapterPosition();
+        DataModel model = modelList.get(pos);
+        Book book = new Book(model.getTotalBook());
+        Client client = new Client(model.getId(), model.getName(), model.getAge(), book);
 
         holder.tvId.setText("ID: " + client.getId());
         holder.tvName.setText("Name: " + client.getName());
         holder.tvAge.setText("Age: " + client.getAge());
-        holder.tvBookNo.setText(context.getString(R.string.total_book_) + " " +
-                modelList.get(pos).getBook().getTotalBook() + "");
+        holder.tvBookNo.setText(context.getString(R.string.total_book_) + " " + client.getBook().getTotalBook() + "");
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                remove(pos);
-                deleteDataFromClientTable(client);
-                return true;
-            }
-        });
+//        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                remove(pos);
+//                deleteDataFromClientTable(client);
+//                return true;
+//            }
+//        });
 
-        Log.d(TAG,"ID: " + client.getId() + " Total Book: " +  modelList.get(pos).getBook().getTotalBook());
+        holder.itemView.setTag(client);
+        holder.itemView.setOnLongClickListener(listener);
     }
 
-    private void deleteDataFromClientTable(final Client client) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                db.clientDao().delete(client);
-            }
-        }).start();
-    }
+//    private void deleteDataFromClientTable(final Client client) {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                db.clientDao().delete(client);
+//            }
+//        }).start();
+//    }
 
     @Override
     public int getItemCount() {
         return modelList.size();
     }
 
-    public void clear() {
-        int itemCount = getItemCount();
-        modelList.clear();
-        //notifyItemRangeRemoved(0, itemCount);
-        notifyDataSetChanged();
-    }
+//    public void clear() {
+//        int itemCount = getItemCount();
+//        modelList.clear();
+//        //notifyItemRangeRemoved(0, itemCount);
+//        notifyDataSetChanged();
+//    }
 
     protected class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView tvName, tvAge, tvBookNo, tvId;
@@ -97,9 +102,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public void remove(int position) {
-        modelList.remove(position);
+//    public void remove(int position) {
+//        modelList.remove(position);
+//        notifyDataSetChanged();
+//        Log.d(TAG, "Pos: " + position + " And Items: " + getItemCount());
+//    }
+
+    public void addDataToDataModel(List<DataModel> models) {
+        this.modelList = models;
         notifyDataSetChanged();
-        Log.d(TAG, "Pos: " + position + " And Items: " + getItemCount());
     }
 }

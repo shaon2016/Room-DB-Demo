@@ -1,23 +1,29 @@
 package com.durbinlabs.roomdemo.activities;
 
-import android.os.AsyncTask;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.durbinlabs.roomdemo.R;
 import com.durbinlabs.roomdemo.adapters.RecyclerViewAdapter;
 import com.durbinlabs.roomdemo.database.AppDatabase;
 import com.durbinlabs.roomdemo.model.Book;
 import com.durbinlabs.roomdemo.model.Client;
 import com.durbinlabs.roomdemo.model.DataModel;
+import com.durbinlabs.roomdemo.viewmodels.DataViewModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnLongClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private AppDatabase db;
     private List<Client> clients;
@@ -27,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText evName, evAge, evTotalBook;
     private RecyclerViewAdapter adapter;
     private List<DataModel> modelList;
+    private DataViewModel clientViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
         // Inserting data to the tables
         clients = new ArrayList<>();
         books = new ArrayList<>();
-        adapter = new RecyclerViewAdapter(modelList, this);
+        adapter = new RecyclerViewAdapter(modelList, this, this);
+        rv.setAdapter(adapter);
         //insert();
 
         evName = findViewById(R.id.evAddName);
@@ -54,10 +62,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addNewData();
-                adapter.clear();
-
-                MyDataLoadAsyncTask myDataLoadAsyncTask = new MyDataLoadAsyncTask();
-                myDataLoadAsyncTask.execute();
             }
         });
 
@@ -68,9 +72,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Load data initially i
-        MyDataLoadAsyncTask myDataLoadAsyncTask = new MyDataLoadAsyncTask();
-        myDataLoadAsyncTask.execute();
+        clientViewModel = ViewModelProviders.of(MainActivity.this).get(DataViewModel.class);
+        clientViewModel.getClientList().observe(MainActivity.this, new Observer<List<DataModel>>() {
+            @Override
+            public void onChanged(@Nullable List<DataModel> models) {
+                adapter.addDataToDataModel(models);
+            }
+        });
     }
 
     private void addNewData() {
@@ -80,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         boolean valid = validateInput(name, age, totalBook);
         if (!valid) return;
-        final Client client = new Client(name, age, 20);
+        final Client client = new Client(name, age);
 
         /*
         first inserting the client.
@@ -131,63 +139,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Client lastClient;
-                db.clientDao().insert(new Client("Shaon", 25, 5000));
+                db.clientDao().insert(new Client("Shaon", 25));
                 lastClient = db.clientDao().getLastRow();
 
                 db.bookDao().insert(new Book("The Alchemist", 67, lastClient.getId()));
 
-                db.clientDao().insert(new Client("Ashiq", 26, 6000));
+                db.clientDao().insert(new Client("Ashiq", 26));
                 lastClient = db.clientDao().getLastRow();
 
                 db.bookDao().insert(new Book("The Alchemist", 65, lastClient.getId()));
 
-                MyDataLoadAsyncTask myDataLoadAsyncTask = new MyDataLoadAsyncTask();
-                myDataLoadAsyncTask.execute();
             }
         }).start();
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        Client client = (Client) view.getTag();
+        clientViewModel.deleteClient(client);
+        return true;
     }
 
     private void clearRecyclerView() {
-        // clearing DB
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                db.clientDao().removeAllClients();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.clear();
-                    }
-                });
-
-                MyDataLoadAsyncTask myDataLoadAsyncTask = new MyDataLoadAsyncTask();
-                myDataLoadAsyncTask.execute();
-            }
-        }).start();
+        clientViewModel.deleteAll();
     }
 
-    protected class MyDataLoadAsyncTask extends AsyncTask<String, String, List<DataModel>> {
-
-        @Override
-        protected List<DataModel> doInBackground(String... strings) {
-            modelList = new ArrayList<>();
-            clients = db.clientDao().getAll();
-            for (Client client : clients) {
-                books.add(db.bookDao().getAllById(client.getId()));
-            }
-
-            for (int i = 0; i < clients.size() && i < books.size(); i++) {
-                modelList.add(new DataModel(clients.get(i), books.get(i)));
-            }
-
-
-            return modelList;
-        }
-
-        @Override
-        protected void onPostExecute(List<DataModel> models) {
-            adapter = new RecyclerViewAdapter(models, MainActivity.this);
-            rv.setAdapter(adapter);
-        }
-    }
 }

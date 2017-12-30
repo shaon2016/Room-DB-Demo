@@ -3,6 +3,7 @@ package com.durbinlabs.roomdemo.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
@@ -26,6 +27,11 @@ public class Book {
         this.name = name;
         this.totalBook = totalBook;
         this.userId = userId;
+    }
+
+    @Ignore
+    public Book(int totalBook) {
+        this.totalBook = totalBook;
     }
 
     public int getId() {

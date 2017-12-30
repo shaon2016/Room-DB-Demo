@@ -20,13 +20,20 @@ public class Client {
     private String name;
     @ColumnInfo(name = "client_age")
     private int age;
-    @ColumnInfo(name = "client_expense")
-    private int expense;
+    @Ignore
+    Book book;
 
-    public Client( String name, int age, int expense) {
+    @Ignore
+    public Client(int id, String name, int age, Book book) {
+        this.id = id;
         this.name = name;
         this.age = age;
-        this.expense = expense;
+        this.book = book;
+    }
+
+    public Client(String name, int age) {
+        this.name = name;
+        this.age = age;
     }
 
     public int getId() {
@@ -53,12 +60,11 @@ public class Client {
         this.age = age;
     }
 
-    public int getExpense() {
-        return expense;
+    public Book getBook() {
+        return book;
     }
 
-    public void setExpense(int expense) {
-        this.expense = expense;
+    public void setBook(Book book) {
+        this.book = book;
     }
-
 }

@@ -5,27 +5,46 @@ package com.durbinlabs.roomdemo.model;
  */
 
 public class DataModel {
-    private Client client;
-    private Book book;
+    private int id;
+    private String name;
+    private int age, totalBook;
 
-    public DataModel(Client client, Book book) {
-        this.client = client;
-        this.book = book;
+    public DataModel(int id, String name, int age, int totalBook) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.totalBook = totalBook;
     }
 
-    public Client getClient() {
-        return client;
+    public int getId() {
+        return id;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public Book getBook() {
-        return book;
+    public String getName() {
+        return name;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getTotalBook() {
+        return totalBook;
+    }
+
+    public void setTotalBook(int totalBook) {
+        this.totalBook = totalBook;
     }
 }
