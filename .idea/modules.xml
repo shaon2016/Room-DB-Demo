@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Room-DB-Demo.iml" filepath="$PROJECT_DIR$/Room-DB-Demo.iml" />
+      <module fileurl="file://C:\Users\hp\AndroidStudioProjects\RoomDemo\Room-DB-Demo.iml" filepath="C:\Users\hp\AndroidStudioProjects\RoomDemo\Room-DB-Demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RoomDemo.iml" filepath="$PROJECT_DIR$/RoomDemo.iml" />
       <module fileurl="file://G:\Android\Projects\Room-DB-Demo\RoomDemo.iml" filepath="G:\Android\Projects\Room-DB-Demo\RoomDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
