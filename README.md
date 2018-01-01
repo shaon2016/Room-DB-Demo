@@ -1,10 +1,10 @@
-Room Persistence Library
+#Room Persistence Library
 
 বিসমিল্লাহির রহমানির রহিম :)
 
 কেন আমরা ROOM ব্যবহার করব? 
 
-GOOGLE highly recommend to use Room instead of SQLite
+###GOOGLE highly recommend to use Room instead of SQLite
 
 রুম হচ্ছে SQLite DB এর একটি এবস্ট্রাকশন লেয়ার, যেটি দিয়ে DB থেকে খুব সহজেই ডাটা পাওয়া যায়।
 
@@ -14,6 +14,7 @@ GOOGLE highly recommend to use Room instead of SQLite
 
 নিচের ডিপেন্ডেন্সি গুলো এড করি আমাদের নতুন প্রজেক্টে,
 
+```
 implementation 'com.android.support:appcompat-v7:26.1.0'
 implementation 'com.android.support:recyclerview-v7:26.1.0'
 // Room
@@ -23,12 +24,13 @@ annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
 // ViewModel and LiveData
 implementation "android.arch.lifecycle:extensions:1.0.0"
 annotationProcessor "android.arch.lifecycle:compiler:1.0.0"
-
+```
 
 ক্লায়েন্ট মডেল ক্লাস। উপরের এন্টিটি ট্যাগ ব্যবহার করে আমরা নির্দেশ দিলাম যে এটি একটি টেবিল। টেবলনেইম, কলাম ইনফো এট্রিবিউট গুলো ব্যবহার করা ডিফল্ট। এগুলো ব্যবহার না করলে মডেল ক্লাস অনুসারে টেবিল তৈরি হবে এবং ভেরিয়েবল অনুসারে টেবিলের এন্টিটি শুরু হবে।
 
 গেটার সেটার মেথোড রাখা জরূরী, ডাটা গেট করার জন্যে।
 
+```
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
@@ -95,14 +97,15 @@ public class Client {
         this.book = book;
     }
 }
+```
 
-
-বুক মডেল ক্লাস।
+###বুক মডেল ক্লাস।
 
 ফরেইন কি ব্যবহার করে আমরা ক্লায়েন্ট মডেল ক্লাসের সাথে একটি রিলেশনশিপ স্থাপন করলাম।
 
 এখানে প্যারেন্ট কলাম হচ্ছে ক্লায়েন্ট টেবিলের আইডি এবং চাইল্ড কলাম হবে বুক টেবিলে থাকা ক্লায়েন্ট আইডির কলাম টি। ক্যাসকেড দিয়ে আমরা বুক টেবিলের ডিলেটের কাজটি করেছি। ক্লায়েন্ট টেবিল থেকে কোন ক্লায়েন্ট ডিলিট হলে তার সব গুলো বুক টেবিলের ডাটাও ডিলেট হবে। ক্লায়েন্ট নাই তাই তার বুক ডাটাবেজে না থাকাই স্বাভাবিক :)
 
+```
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
@@ -168,8 +171,11 @@ public class Book {
         this.userId = userId;
     }
 }
+```
+
 recyclerview তে ডাটা লোড করার জন্যে ক্লায়েন্ট এবং বুক মডেলের কম্বিনেশন। 
 
+```
 /**
  * Created by Shaon on 12/28/2017.
  */
@@ -218,14 +224,16 @@ public class ClientDataModel {
         this.totalBook = totalBook;
     }
 }
-DAO (Data Access Object)
+```
+##DAO (Data Access Object)
 
 ডাটাবেজ থেকে সকল ধরণের ডাটা এক্সেসের কাজ DAO তে করা হবে। 
 
-LiveData: একটি অবজারভেবল ডাটাহোল্ডার। যে একটিভিটি বা ফ্রেগমেন্টের জন্যে ডাটা লাইভডাটা ব্যবহার করে লোড করা হয়, সেই ডাটাতে কোন পরিবর্তন আসলে এটি সাথে সাথে UI আপডেট করে। 
+##LiveData: একটি অবজারভেবল ডাটাহোল্ডার। যে একটিভিটি বা ফ্রেগমেন্টের জন্যে ডাটা লাইভডাটা ব্যবহার করে লোড করা হয়, সেই ডাটাতে কোন পরিবর্তন আসলে এটি সাথে সাথে UI আপডেট করে। 
 
 DAO ইন্টারফেস বা এবস্ট্রাক্ট ব্যবহার করে তৈরি করা যেতে। See doc for details. :p
 
+```
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -269,8 +277,8 @@ public interface ClientDao {
             "inner join book b ON c.id = b.user_id")
     LiveData<List<ClientDataModel>> getAllWithBook();
 }
-
-
+```
+```
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -300,10 +308,13 @@ public interface BookDao {
     void insert(Book... books);
 
 }
+```
+
 নিচের কোড ব্যবহার করে আমরা ডাটাবেজের ইন্সটেন্স পেতে পারি। এটি অবশ্যই সিংগ্লেটন প্যাটার্ন হতে হবে। 
 
 ডাটা এক্সেস করার জন্যে DAO মেথোড। 
 
+```
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
@@ -345,8 +356,9 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract BookDao bookDao();
 }
+```
 
-
+```
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -427,12 +439,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         notifyDataSetChanged();
     }
 }
-VIEWMODEL:  
+```
+##VIEWMODEL:  
 
 এটি ডাটা লোড করার জন্যে ডাটা প্রস্তুত করে এবং ডাটা ম্যানেজ করে।  একটিভিটি/ ফ্রেগমেন্টের কমিউনিকেশন স্থাপন করে সম্পূর্ণ এপের সাথে।  
 
 ডাটা লোড এবং ম্যানেজ করার লজিক গুলো এখানে লিখতে হবে। যেহেতু ডাটাবেজ এক্সেজ মেইন থ্রেডে সম্ভব নয়, তাই এখানে এসিনটাস্ক ব্যবহার করেছি। 
 
+```
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
@@ -501,12 +515,13 @@ public class ClientDataViewModel extends AndroidViewModel {
         }
     }
 }
-
+```
 
 
 
 ডাটা ইন্সার্ট করার জন্যে থ্রেড ব্যবহার করতে হয়েছে। যেহেতু ROOM মেইন থ্রেডে ডাটাবেজ এক্সেস রেকোমমেন্ড করেনা বা সাপোর্ট করেনা বলা যায়। 
 
+```
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
@@ -671,8 +686,9 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     }
 
 }
+```
 
-
+```
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -733,8 +749,9 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         android:layout_marginTop="16dp"></android.support.v7.widget.RecyclerView>
 
 </LinearLayout>
+```
 
-
+```
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -781,8 +798,8 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         android:text="@string/book_no_5"
         android:textSize="14sp" />
 </LinearLayout>
+```
 
+###Reference:
 
-Reference:
-
-https://developer.android.com/training/data-storage/room/index.html
+[https://developer.android.com/training/data-storage/room/index.html]
