@@ -1,10 +1,10 @@
-#Room Persistence Library
+# Room Persistence Library
 
 বিসমিল্লাহির রহমানির রহিম :)
 
 কেন আমরা ROOM ব্যবহার করব? 
 
-###GOOGLE highly recommend to use Room instead of SQLite
+### GOOGLE highly recommend to use Room instead of SQLite
 
 রুম হচ্ছে SQLite DB এর একটি এবস্ট্রাকশন লেয়ার, যেটি দিয়ে DB থেকে খুব সহজেই ডাটা পাওয়া যায়।
 
@@ -99,7 +99,7 @@ public class Client {
 }
 ```
 
-###বুক মডেল ক্লাস।
+### বুক মডেল ক্লাস।
 
 ফরেইন কি ব্যবহার করে আমরা ক্লায়েন্ট মডেল ক্লাসের সাথে একটি রিলেশনশিপ স্থাপন করলাম।
 
@@ -225,11 +225,12 @@ public class ClientDataModel {
     }
 }
 ```
-##DAO (Data Access Object)
+## DAO (Data Access Object)
 
 ডাটাবেজ থেকে সকল ধরণের ডাটা এক্সেসের কাজ DAO তে করা হবে। 
 
-##LiveData: একটি অবজারভেবল ডাটাহোল্ডার। যে একটিভিটি বা ফ্রেগমেন্টের জন্যে ডাটা লাইভডাটা ব্যবহার করে লোড করা হয়, সেই ডাটাতে কোন পরিবর্তন আসলে এটি সাথে সাথে UI আপডেট করে। 
+## LiveData: 
+একটি অবজারভেবল ডাটাহোল্ডার। যে একটিভিটি বা ফ্রেগমেন্টের জন্যে ডাটা লাইভডাটা ব্যবহার করে লোড করা হয়, সেই ডাটাতে কোন পরিবর্তন আসলে এটি সাথে সাথে UI আপডেট করে। 
 
 DAO ইন্টারফেস বা এবস্ট্রাক্ট ব্যবহার করে তৈরি করা যেতে। See doc for details. :p
 
@@ -440,7 +441,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 }
 ```
-##VIEWMODEL:  
+## VIEWMODEL:  
 
 এটি ডাটা লোড করার জন্যে ডাটা প্রস্তুত করে এবং ডাটা ম্যানেজ করে।  একটিভিটি/ ফ্রেগমেন্টের কমিউনিকেশন স্থাপন করে সম্পূর্ণ এপের সাথে।  
 
@@ -687,7 +688,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
 }
 ```
-
+activity_main.xml
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -750,7 +751,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
 </LinearLayout>
 ```
-
+recyclerview_row.xml
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -800,6 +801,6 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 </LinearLayout>
 ```
 
-###Reference:
+### Reference:
 
 [https://developer.android.com/training/data-storage/room/index.html]
