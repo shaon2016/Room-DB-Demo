@@ -23,17 +23,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:hint="@string/age"
+        android:digits="0123456789"
         android:inputType="number"
         android:paddingLeft="16dp" />
 
-    <EditText
-        android:id="@+id/evAddTotalBookCount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="@string/total_book"
-        android:inputType="number"
-        android:paddingLeft="16dp" />
 
     <Button
         android:id="@+id/btnAdd"

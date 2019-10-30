@@ -540,7 +540,7 @@ import com.durbinlabs.roomdemo.database.AppDatabase;
 import com.durbinlabs.roomdemo.model.Book;
 import com.durbinlabs.roomdemo.model.Client;
 import com.durbinlabs.roomdemo.model.ClientDataModel;
-import com.durbinlabs.roomdemo.viewmodels.ClientDataViewModel;
+import com.durbinlabs.roomdemo.viewmodels.ClientVM;
 
 import java.util.ArrayList;
 import java.util.List;
