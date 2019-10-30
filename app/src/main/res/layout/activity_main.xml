@@ -51,10 +51,10 @@
         android:layout_marginTop="8dp"
         android:text="@string/remove_all_data" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="16dp"></android.support.v7.widget.RecyclerView>
+        android:layout_marginTop="16dp"/>
 
 </LinearLayout>
