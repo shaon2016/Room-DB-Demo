@@ -9,6 +9,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 import com.durbinlabs.roomdemo.model.Client
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by hp on 12/27/2017.
@@ -16,8 +17,18 @@ import com.durbinlabs.roomdemo.model.Client
 
 @Dao
 interface ClientDao {
+
+
+    /*
+    Using suspend function
     @Query("SELECT * FROM client")
-     fun all(): LiveData<List<Client>>
+    suspend fun all(): LiveData<List<Client>>
+
+    */
+
+
+    @Query("SELECT * FROM client")
+    fun all(): Flow<List<Client>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(vararg clients: Client)
